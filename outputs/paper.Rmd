@@ -1,10 +1,8 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Resolving mental health issue could possibly reduce criminal behaviors in Canada"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Alicia Yang
+thanks: "https://github.com/Alicia-y/Telling-stories-with-data-final-paper"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 output:
@@ -17,44 +15,26 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
-library(palmerpenguins)
 ```
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. For instance, Section \@ref(data). R Markdown automatically makes the sections lower case and adds a dash to spaces to generate labels, for instance, Section \@ref(first-discussion-point). 
+In recent years, the Canadian society have been increasingly experiencing the issue of mental health. Research have shown that in every five randomly selected Canadians or every two randomly selected Canadians over 40 years old, one of them probably has a history of suffering from mental illness (). The rapid growth of this problem is likely to be caused by a combination of social and environmental factors, including the family history of the patients, drug abuse issue, stressful environment, etc. The spread of COVID pandemic is also being accused of accelerating the issue of mental health in Canada, because statistics have shown that compared to 2020, there is a 4% increase in the number of Canadians over 18 years old who have demonstrated the symptoms of mental illness in 2021(). Mental health issue can be a very serious problem, even though lots of people don't pay enough attention to it. If does not only negatively affect the feelings, mood and perception about life of the patients, but could also threaten the physical well-being of them and people around them in extreme cases. According to the Centre for Addiction and Mental Health, people with mental illness might have suicidal tendencies(depression) and are more likely to become criminals and victims of violent incidents/crimes. I'm interested in the validity of this claim, thus, this paper is aimed to investigate whether and how the mental health issue affects the reported crime rate in Canada.
 
+The data used in this report is obtained from Statistics Canada. The first dataset contained mental health data in recent years with a focus on the patients' age group, gender, etc. The second dataset contained information about the annual reported crimes/violence/homicides in Canada. I am interested in the year in which the crime occurs, the type of the violence, and possibly the neighborhood where it occurs. In section \@ref(data), the two datasets are discussed and cleaned to perform more accurate analysis. Visualizations in the forms of tables and graphs are presented to help to explain the possible correlation between mental illness cases and reported crime cases in Canada each year. In section \@ref(model), a model is constructed to justify the relationship and to make future predictions. All findings related to this topic is presented in section \@ref(results). A discussion is carried out in section \@ref(discussion) on the implications of the findings, possible solutions to this issue, as well as the limitations of this paper.
+
+One of the reason why mental health is such a serious issue is that it's hard to identify and treat. Most patients undergo long-term treatments before fully recovered. To provide possible resolutions, measures are taken in recent years for the patients of mental illness, such as opening different types of community support services to help them cope with this issue. I will also look into the effectiveness of these support services and programs and see if they actually helped the ones suffering from mental health issues.
 
 
 # Data
 
 Our data is of penguins (Figure \@ref(fig:bills)).
 
-```{r bills, fig.cap="Bills of penguins", echo = FALSE}
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
 
 Talk more about it.
 
 Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can change the height and width so they don't take the whole page?)
 
-```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
-
-# This needs to be about the random data tha tI sasmpled?
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
 
 Talk way more about it. 
 
