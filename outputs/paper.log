@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.3.9)  6 APR 2022 01:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.3.9)  6 APR 2022 01:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -529,12 +529,12 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <6> on input line 78.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 78.
-
-LaTeX Warning: Reference `fig:bills' on page 1 undefined on input line 94.
-
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+
+LaTeX Warning: Reference `fig:bills' on page 2 undefined on input line 94.
+
 
 LaTeX Warning: Reference `fig:billssssss' on page 2 undefined on input line 98.
 
@@ -557,11 +557,11 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 13246 strings out of 483107
- 193151 string characters out of 5964631
- 475180 words of memory out of 5000000
+ 13252 strings out of 483107
+ 193209 string characters out of 5964631
+ 476180 words of memory out of 5000000
  27939 multiletter control sequences out of 15000+600000
- 601702 words of font info for 106 fonts, out of 8000000 for 9000
+ 601969 words of font info for 109 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  41i,6n,42p,1489b,400s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dv
@@ -576,7 +576,7 @@ lic/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/te
 xmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri
 10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fon
 ts/type1/public/lm/lmtt10.pfb>
-Output written on paper.pdf (4 pages, 257716 bytes).
+Output written on paper.pdf (4 pages, 262698 bytes).
 PDF statistics:
  168 PDF objects out of 1000 (max. 8388607)
  147 compressed objects within 2 object streams
