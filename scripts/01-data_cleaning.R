@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Clean the survey data downloaded from Statistics Canada 
+# Purpose: Clean the data downloaded from Statistics Canada 
 # Author: Alicia Yang
 # Data: 27 April 20212
 # Contact: aliciam.yang@mail.utoronto.ca
@@ -38,15 +38,25 @@ raw_data <- raw_data %>%
 
 # Create a new variable that indicates the difference in income between the richest and poorest population of Canada
 raw_data <- raw_data %>%
-  mutate(Income range = )
+  mutate(`Income range` = ifelse(`Income decile` == "Total deciles", 0, NA))
+
+for(i in 1:nrow(raw_data)) {
+  if (raw_data[i,3] == "Total deciles") {
+    if (raw_data[i+1,3] == "Lowest decile" && raw_data[i+10,3] == "Highest decile") {
+      raw_data[i,5] = raw_data[i+10,4] - raw_data[i+1,4]
+    } else{
+      raw_data[i,5] = NA
+    }
+  }
+}
 
 
 # remove unavailable data
-raw_data <- raw_data %>%
-  drop_na()      
+cleaned_data <- raw_data %>%
+  drop_na(Year, `Geographical Location`, `Income decile`, Income)      
 
-#### What's next? ####
-
+# save the cleaned data to inputs folder
+write_csv(cleaned_data, "STA304/Telling-stories-with-data-final-paper/inputs/cleaned_data.csv")
 
 
          

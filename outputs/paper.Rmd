@@ -7,17 +7,22 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: "People have claimed that individuals who are experiencing mental illness are more likely to be involved in violent incidents and crime activities either as victims or as criminals. To investigate more on this issue, this paper aims to explore how the mental health issue interacts with the reported crimes in Canada. By utilizing the data from Statistics Canada, we found that increase in mental health cases does have a positive correlation with the crime rates in Canada. More specifically, teenagers suffering from mental illness are much more likely to be involved in criminal activities. In addition, implications behind this correlation is discussed and possible solutions is proposed."
 output:
   bookdown::pdf_document2
-toc: FALSE
+toc: TRUE
 bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+# Set up libraries
 library(tidyverse)
 library(dplyr)
 library(tidyr)
+library(knitr)
+library(kableExtra)
+
 ```
+
+\newpage
 
 # Introduction
 
@@ -31,30 +36,56 @@ Associated with
 
 Difficult and challenging to deal with
 
-
-The data used in this report is obtained from Statistics Canada. The first dataset contained mental health data in recent years with a focus on the patients' age group, gender, etc. The second dataset contained information about the annual reported crimes/violence/homicides in Canada. I am interested in the year in which the crime occurs, the type of the violence, and possibly the neighborhood where it occurs. In section \@ref(data), the two datasets are discussed and cleaned to perform more accurate analysis. Visualizations in the forms of tables and graphs are presented to help to explain the possible correlation between mental illness cases and reported crime cases in Canada each year. In section \@ref(model), a model is constructed to justify the relationship and to make future predictions. All findings related to this topic is presented in section \@ref(results). A discussion is carried out in section \@ref(discussion) on the implications of the findings, possible solutions to this issue, as well as the limitations of this paper.
+ In section \@ref(data), the two datasets are discussed and cleaned to perform more accurate analysis. Visualizations in the forms of tables and graphs are presented to help to explain the possible correlation between mental illness cases and reported crime cases in Canada each year. In section \@ref(model), a model is constructed to justify the relationship and to make future predictions. All findings related to this topic is presented in section \@ref(results). A discussion is carried out in section \@ref(discussion) on the implications of the findings, possible solutions to this issue, as well as the limitations of this paper.
 
 One of the reason why mental health is such a serious issue is that it's hard to identify and treat. Most patients undergo long-term treatments before fully recovered. To provide possible resolutions, measures are taken in recent years for the patients of mental illness, such as opening different types of community support services to help them cope with this issue. I will also look into the effectiveness of these support services and programs and see if they actually helped the ones suffering from mental health issues.
 
 
 # Data
 
-The dataset, which is a summary of the income-related statistics in Canada between 1976 and 2020, is obtained from the Open Government Portal of Statistics Canada. The source of the data is from the Canadian Income Survey conducted annually. 
-One possible bias came with the survey methodology was the over-coverage of the units that are not the target population and the under-coverage of 
+## Dataset Description and Methodology
+
+The dataset, which is a summary of the income-related statistics in Canada between 1976 and 2020, is obtained from the Open Government Portal of Statistics Canada. The source of the data is from the Canadian Income Survey conducted annually. The survey covers all the possible population in Canada except for the people and households living in remote areas or indigenous settlements. It doesn't really affect the outcome of the survey, because these people only take up less than 2 percent of the population(). The selected respondents were drawn from the Labour Force Survey samples, which is based on a stratified probability sampling(). To reduce some non-sampling errors, telephone interviews ware conducted prior to the main survey to increase the response rate of the selected participants Once they give consent to completing the survey, they will be able to complete it in an online form. Respondents are protected from the confidentiality rules, so that their privacy won't be disclosed after the survey is made public.
+One possible bias came with the survey methodology was the over-coverage of the units that are not the target population and the under-coverage of certain sub-population that should be included in the survey, such as certain remote areas. 
 
 
+The original dataset contains 173043 observations and 18 variables with all kinds of information about income level statistics. This report wants to focus on exploring the trend of income inequality and investigating the possible factors that may affect income inequality. Thus, I will be interested in the variables "Year", "Geographical Location", "Income decile", "Income" which tells how the income level of different regions of Canada has evolved throughout these years. R [@citeR], and R packages "tidyverse" [@citetidyverse], "janitor" [@citejanitor], "knitr" [@citeknitr], "dplyr" [@citedplyr], and "kableExtra" [@citekableExtra] are utilized to create an extract of the cleaned dataset (Table \@ref(tab:dataextract)).
 
-R [@citeR], and R packages "tidyverse" [@citetidyverse], "janitor" [@citejanitor], "knitr" [@citeknitr], "dplyr" [@citedplyr], and "kableExtra" [@citekableExtra] are utilized to create an extract of the cleaned dataset (Table \@ref(tab:dataextract)).
+```{r, echo=FALSE, message=FALSE}
+# Load the cleaned data
+income <- read_csv(here::here("inputs/cleaned_data.csv"))
+```
 
-The variables of interest are 
 
-```{r}
+```{r dataextract, echo=FALSE, message=FALSE}
+income %>%
+  slice(1:10) %>%
+  kable(
+    caption = "Extracting the first ten rows from the Income data",
+col.names=c("Year", "Geographical location", "Income decile", "Income", "Income range"),
+linesep = "", digits = 1, booktabs=TRUE) %>%
+  kable_styling(latex_options = "HOLD_position", font_size = 10)
+```
+  
+Table \@ref(tab:dataextract) shows the first ten rows of the cleaned dataset. It contains 6395 variables and 5 variables in total. As we known, the information from the dataset is extracted from the Canada Income Survey. Variable "Year" indicates the year of the survey. Variable "Geographical location" indicates where the group of respondents are from. Variable "Income decile" gives more information about the variable "Income", by telling us  
 
-raw_data %>%
+
+## Data Visualization
+
+```{r, echo=FALSE, message=FALSE}
+
+income %>%
   filter(
          `Income decile` == "Total deciles",
          `Geographical Location` == "Canada") %>%
-  ggplot(aes(x=year, y=Income, colour = `Geographical Location`))+geom_point()+theme_minimal()
+  ggplot(aes(x=Year, y=Income))+geom_point()+theme_minimal()+ylab("Average after-tax income in Canada")
+```
+
+```{r, echo=FALSE, message=FALSE}
+income %>%
+  filter(
+         `Income decile` == "Total deciles") %>%
+  ggplot(aes(x=Year, y=`Income range`, colour = `Geographical Location`))+geom_point()+theme_minimal()
 ```
 
 
@@ -108,4 +139,6 @@ Weaknesses and next steps should also be included.
 https://www.nytimes.com/2020/07/01/opinion/economic-inequality-moral-philosophy.html#:~:text=Enough%20economic%20inequality%20can%20transform,society%20ruled%20by%20the%20rich.&text=Large%20inequalities%20of%20inherited%20wealth,and%20undercuts%20equality%20of%20opportunity.
 
 (2)https://www.conferenceboard.ca/hcp/hot-topics/canInequality.aspx#:~:text=Income%20inequality%20in%20Canada%20has,income%20Canadians%20also%20lost%20share.
+
+https://www23.statcan.gc.ca/imdb/p2SV.pl?Function=getSurvey&SDDS=5200
 
