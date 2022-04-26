@@ -6,7 +6,9 @@
 
 # Workplace setup
 library(tidyverse)
+set.seed(1005813130)
 
+# Generate the variables
 simulated_data <-
   tibble(Year = rep(1976:2020, each=143),
          `Geographical Location`=rep(c(
@@ -28,7 +30,13 @@ simulated_data <-
          Income = rep(0,6435),
          `Income range` = rep(0,6435))
 
-
+# Simulate random
+num = 1
 for (i in 1:nrow(simulated_data)) {
-  
+  if (simulated_data[i,3] == "Total deciles"){
+    simulated_data[i,4] = runif(1, num*20+70000,  num*60+70000)
+  }
+  if (simulated_data[i,2] == "British Columbia") {
+    num =  num + 1
+  }
 }

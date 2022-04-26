@@ -1,10 +1,11 @@
 ---
-title: "Evolution of income (equality) in Canada"
+title: "Evolution of Income Inequality in Canada"
+subtitle: "My subtitle if needed"
 author: 
   - Alicia Yang
 thanks: "Code and data are available at: https://github.com/Alicia-y/Telling-stories-with-data-final-paper"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "People have claimed that individuals who are experiencing mental illness are more likely to be involved in violent incidents and crime activities either as victims or as criminals. To investigate more on this issue, this paper aims to explore how the mental health issue interacts with the reported crimes in Canada. By utilizing the data from Statistics Canada, we found that increase in mental health cases does have a positive correlation with the crime rates in Canada. More specifically, teenagers suffering from mental illness are much more likely to be involved in criminal activities. In addition, implications behind this correlation is discussed and possible solutions is proposed."
+abstract: "People have claimed that the income disparity in Canada has increased alongside with the rapid growth of its economy. To investigate more on this issue, this paper aims to explore how the mental health issue interacts with the reported crimes in Canada. By utilizing the data from Statistics Canada, we found that increase in mental health cases does have a positive correlation with the crime rates in Canada. More specifically, teenagers suffering from mental illness are much more likely to be involved in criminal activities. In addition, implications behind this correlation is discussed and possible solutions is proposed."
 output:
   bookdown::pdf_document2
 toc: TRUE
@@ -30,16 +31,12 @@ In recent decades the world as a whole is developing fast economically, and one 
 It concerns how the wealth and income of the population is distributed. Although we are generally living higher quality lives and getting higher incomes, another problem is being put forward by people who are claiming that the gap between the rich and poor is getting larger due to technological advancement, globalization, countries' governmental structure and policies, which betters off the people who are already wealthy by making it easy for them to seek for more opportunities, thus, snowballing their assets faster. Income disparity can be a huge issue. It makes the income per capita of a country less reflective of its people's true living quality, because income per capita does not tell the distribution of the income. The richest people may pull up the statistics about the average/median income level, but it doesn't mean the country is performing well economically as a whole. In addition to that, income inequality also have other potential negative effects. It could reduce the stability of the economy and increase the risk of financial crisis. It could also result in corruption, misallocation of resources as the rich is empowered economically, socially and even politically.
 Canada is one of the country in the world that provides the most benefits and welfare, yet people still claimed that the economic inequality is rising along with the income over the past 2 decades(2). Therefore, I'm interested in whether this is a serious issue in Canada. If so, in which regions and what period of time is it a serious issue? And is it possible to predict how the disparity of income change in future?
 
-The data used in this report is obtained from Open Government Data of Statistics Canada. The dataset is called "Upper income limit, income share and average income by economic family type and income decile", and it provides different kinds information about the income level of the households of Canada between 1976 and 2020 by the Canadian Income Survey. In this dataset, I'm interested in the year the data is from, the geographical location, the income decile so that we could observe the difference between the lowest and highest decile, and the actual value of the income. In section \@ref(data), a cleaned dataset is obtained 
+The data used in this report is obtained from Open Government Data of Statistics Canada. The dataset is called "Upper income limit, income share and average income by economic family type and income decile", and it provides different kinds information about the income level of the households of Canada between 1976 and 2020 by the Canadian Income Survey. In this dataset, I'm interested in the year the data is from, the geographical location, the income decile so that we could observe the difference between the lowest and highest decile, and the actual value of the income. In section \@ref(data), a cleaned dataset is obtained and explained to perform further analysis. Visualizations in the forms of tables and figures are presented to help to explain the possible correlation between year, provinces and the income disparity in Canada. By data visualization, I've primarily assumed that the income disparity in Canada has generally increased as time passed and presents different trends in different provinces before constructing the model. In section \@ref(model),
 
 Associated with 
 
 Difficult and challenging to deal with
-
- In section \@ref(data), the two datasets are discussed and cleaned to perform more accurate analysis. Visualizations in the forms of tables and graphs are presented to help to explain the possible correlation between mental illness cases and reported crime cases in Canada each year. In section \@ref(model), a model is constructed to justify the relationship and to make future predictions. All findings related to this topic is presented in section \@ref(results). A discussion is carried out in section \@ref(discussion) on the implications of the findings, possible solutions to this issue, as well as the limitations of this paper.
-
-One of the reason why mental health is such a serious issue is that it's hard to identify and treat. Most patients undergo long-term treatments before fully recovered. To provide possible resolutions, measures are taken in recent years for the patients of mental illness, such as opening different types of community support services to help them cope with this issue. I will also look into the effectiveness of these support services and programs and see if they actually helped the ones suffering from mental health issues.
-
+In section \@ref(model), a model is constructed to justify the relationship and to make future predictions. All findings related to this topic is presented in section \@ref(results). A discussion is carried out in section \@ref(discussion) on the implications of the findings, possible solutions to this issue, as well as the limitations of this paper.
 
 # Data
 
@@ -67,29 +64,49 @@ linesep = "", digits = 1, booktabs=TRUE) %>%
   kable_styling(latex_options = "HOLD_position", font_size = 10)
 ```
   
-Table \@ref(tab:dataextract) shows the first ten rows of the cleaned dataset. It contains 6395 variables and 5 variables in total. As we known, the information from the dataset is extracted from the Canada Income Survey. Variable "Year" indicates the year of the survey. Variable "Geographical location" indicates where the group of respondents are from. Variable "Income decile" gives more information about the variable "Income", by telling us  
-
+Table \@ref(tab:dataextract) shows the first ten rows of the cleaned dataset. It contains 6395 variables and 5 variables in total. The target population of the dataset is a combination of economic families and unattached individuals in Canada. As we known, the information from the dataset is extracted from the Canada Income Survey. Variable "Year" indicates the year of the survey. Variable "Geographical location" indicates where the group of respondents are from. Variable "Income" gives the average value of after-tax income of the respondents in corresponding year and location. Variable "Income decile" gives more information about the variable "Income", by telling us whether each piece of income information represents the average after-tax income of all respondents, the richest 10 percent respondents, the second richest 10 percent respondents, ..., and the poorest 10 percent respondents. This piece of data is extremely helpful because it also gives extra information about the difference regarding the income level between the poorest and richest groups. The last variable "Income range" is not in the original dataset. It indicates the difference in income between the poorest and richest groups, which is obtained from manipulating data from the "Income" column. It's only available at the instances of "Total deciles".
 
 ## Data Visualization
 
-```{r, echo=FALSE, message=FALSE}
+In order to get further familiarized with the dataset and estimate the possible associations between the nation's average income and other factors, exploratory analysis is carried out by conducting data visualizations to observe whether the patterns between certain factors matches the generally expectations of the trend of income and income inequality in Canada. First of all, we will have a look through the overall trend of income level in Canada.
 
+```{r figure1, echo=FALSE, message=FALSE, fig.cap="Average after-tax income in Canada per year between 1976 and 2020", fig.width=6, fig.height=3}
+# 
+income %>%
+  filter(`Income decile` == "Total deciles",
+         `Geographical Location` == "Canada") %>%
+  ggplot(aes(x=Year, y=Income))+geom_line(color="blue")+theme_minimal()+ylab("Average after-tax income")
+```
+
+\newpage
+
+As Figure \@ref(fig:figure1) has demonstrated, Canadians have experienced a rapidly growing income level since 1976 to now. Early 1980s and 1990s are basically the only two periods of times that we see an obvious pattern of the decrease in income, and they all lasted for less than five years. This phenomenon is expected as during the time of early 1980s and 1990s, Canada was experiencing recession due to the change in monetary policy and a side effect of the cold war. As a result, the unemployment rate rose and due to an increase in the competitiveness of workforce, people's incomes have dropped. However, during other times, the income level have always demonstrated an increasing trend, indicating that without negative external forces, Canada generally has expanded its economy and enhanced its people's life quality well. The average after-tax income for economic families and unattached individuals in Canada has rose from around \$72400 in 1976 to \$96000 in 2020.
+
+```{r figure2, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Trend of lowest and highest decile of sverage after-tax income in Canada between 1976 and 2020", fig.width=7, fig.height=3.1}
+income %>%
+  filter(
+         `Income decile` == "Lowest decile" | `Income decile` == "Highest decile",
+         `Geographical Location` == "Canada") %>%
+  ggplot(aes(x=Year, y=Income, colour = `Income decile`))+geom_line()+theme_minimal()+ylab("Average after-tax income")
+```
+
+\newpage
+
+Figure \@ref(fig:figure2) is an illustration of how the income level of the richest and poorest groups of economic families and unattached individuals differ between the year of 1976 and 2020. The blue line indicates the trend of the lowest decile of the average after-tax income in Canada, which barely increased. In fact, the lowest decile of average after-tax income was \$9200 in 1976, but only \$15000 after 44 years in 2020. On the other hand, the red line indicates the trend of the highest decile of the average after-tax income in Canada, which has a very clear increasing pattern, by looking at the data, it increased for $86000 between 1976 and 2020, which is more than 10 times the income level increase of the lowest decile. By comparing the two lines, we can see that the income inequality in Canada as a whole is getting larger as the two lines drift further away from each other as time passed.
+
+```{r figure3, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Difference between lowest and highest average after-tax income in the 10 provinces of Canada between 1976 and 2020", fig.width=7, fig.height=3.3}
 income %>%
   filter(
          `Income decile` == "Total deciles",
-         `Geographical Location` == "Canada") %>%
-  ggplot(aes(x=Year, y=Income))+geom_point()+theme_minimal()+ylab("Average after-tax income in Canada")
+         `Geographical Location` != "Canada",
+         `Geographical Location` != "Atlantic provinces",
+         `Geographical Location` != "Prairie provinces") %>%
+  ggplot(aes(x=Year, y=`Income range`, colour = `Geographical Location`))+geom_point()+theme_minimal()+ylab("Average after-tax income range")
 ```
 
-```{r, echo=FALSE, message=FALSE}
-income %>%
-  filter(
-         `Income decile` == "Total deciles") %>%
-  ggplot(aes(x=Year, y=`Income range`, colour = `Geographical Location`))+geom_point()+theme_minimal()
-```
+Figure \@ref(fig:figure3) has demonstrated the difference between the lowest and highest decile of the average after-tax income of economic families and unattached individuals in the ten provinces of Canada between 1976 and 2020. Overall, there is an increasing pattern in every province, indicating that the gap between the incomes earned by richest and poorest people is getting larger in every region of Canada. By just examining this figure, some particular provinces seem to experience a greater increase in income inequality than the others as time passed. For instance, as shown by the red dots, Alberta clearly has the greatest increase among all the provinces of Canada. On the other hand, Quebec seems to see the smallest increase in income inequality as it has a flatter slope in the figure. The cause the difference in income inequality between these provinces is likely to be difference in their provincial policy and economy.
 
-
-
+\newpage
 
 # Model
 

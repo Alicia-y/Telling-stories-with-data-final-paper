@@ -1,6 +1,5 @@
 ---
 title: "Datasheet"
-subtitle: "My subtitle if needed"
 author: 
   - Alicia Yang
 thanks: "Code and data are available at: https://github.com/Alicia-y/Telling-stories-with-data-final-paper"
