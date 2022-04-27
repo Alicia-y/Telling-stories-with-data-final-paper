@@ -1,10 +1,14 @@
-# Investigating how mental health issue affect the tendency to commit crimes
+# Investigating the Evolution of Income Disparity in Canada
 
 ## Overview
-This repository contains a paper investigating whether and how the increase in mental health cases among Toronto citizens influence the rate of commiting different types of crimes. The data about crime rates and homicide rate in Toronto is obtained from in the Open Data Portal of Toronto: https://open.toronto.ca/dataset/police-annual-statistical-report-reported-crimes/, https://open.toronto.ca/dataset/police-annual-statistical-report-homicide/.
+This repository contains a paper investigating whether and how income inequality has expanded in different provinces of Canada as time passed. The data about the income level information of economic families and unattached individuals in the ten provinces of Canada between 1976 and 2020 can be found in the Open Government Portal of Statistics Canada: https://open.canada.ca/data/en/dataset/b06716c0-eea7-4267-87b6-4faaa2679f22
 
 ## Files Structure
 There are three folders in this repository: inputs, scripts, and outputs.
-- Inputs folder contains all the raw and cleaned dataset used in this paper
-- Scripts folder contains the R file that imports and cleans the dataset obtained from the Toronto Open Data Portal
-- Outputs folder conatins the paper, the rmd file of the paper, and a reference file
+- Inputs folder contains the raw and cleaned dataset used in this paper as well as the datasheet.
+- Scripts folder contains two R files. 00-simulation.R simulate the data that we expected for this paper. 01-cata_cleaning.R imports and cleans the dataset obtained from the Open Government Portal of Statistics Canada.
+- Outputs folder conatins the paper, the rmd file of the paper, and a reference file.
+
+## How to generate the paper
+- Download a ZIP file of this repository
+- Run 01-cata_cleaning.R to 

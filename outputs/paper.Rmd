@@ -31,7 +31,7 @@ In recent decades the world as a whole is developing fast economically, and one 
 It concerns how the wealth and income of the population is distributed. Although we are generally living higher quality lives and getting higher incomes, another problem is being put forward by people who are claiming that the gap between the rich and poor is getting larger due to technological advancement, globalization, countries' governmental structure and policies, which betters off the people who are already wealthy by making it easy for them to seek for more opportunities, thus, snowballing their assets faster. Income disparity can be a huge issue. It makes the income per capita of a country less reflective of its people's true living quality, because income per capita does not tell the distribution of the income. The richest people may pull up the statistics about the average/median income level, but it doesn't mean the country is performing well economically as a whole. In addition to that, income inequality also have other potential negative effects. It could reduce the stability of the economy and increase the risk of financial crisis. It could also result in corruption, misallocation of resources as the rich is empowered economically, socially and even politically.
 Canada is one of the country in the world that provides the most benefits and welfare, yet people still claimed that the economic inequality is rising along with the income over the past 2 decades(2). Therefore, I'm interested in whether this is a serious issue in Canada. If so, in which regions and what period of time is it a serious issue? And is it possible to predict how the disparity of income change in future?
 
-The data used in this report is obtained from Open Government Data of Statistics Canada. The dataset is called "Upper income limit, income share and average income by economic family type and income decile", and it provides different kinds information about the income level of the households of Canada between 1976 and 2020 by the Canadian Income Survey. In this dataset, I'm interested in the year the data is from, the geographical location, the income decile so that we could observe the difference between the lowest and highest decile, and the actual value of the income. In section \@ref(data), a cleaned dataset is obtained and explained to perform further analysis. Visualizations in the forms of tables and figures are presented to help to explain the possible correlation between year, provinces and the income disparity in Canada. By data visualization, I've primarily assumed that the income disparity in Canada has generally increased as time passed and presents different trends in different provinces before constructing the model. In section \@ref(model),
+The data used in this report is obtained from Open Government Data of Statistics Canada. The dataset is called "Upper income limit, income share and average income by economic family type and income decile", and it provides different kinds information about the income level of the households of Canada between 1976 and 2020 by the Canadian Income Survey. In this dataset, I'm interested in the year the data is from, the geographical location, the income decile so that we could observe the difference between the lowest and highest decile, and the actual value of the income. In section \@ref(data), a cleaned dataset is obtained and explained to perform further analysis. Visualizations in the forms of tables and figures are presented to help to explain the possible correlation between year, provinces and the income disparity in Canada. By data visualization, I've primarily assumed that the income disparity in Canada has generally increased as time passed and presents different trends in different provinces before constructing the model. In section \@ref(model), a multiple linear regression model is constructed to justify the relationship between year, province and income inequality, and to make future predictions. All the findings alongside with
 
 Associated with 
 
@@ -64,7 +64,7 @@ linesep = "", digits = 1, booktabs=TRUE) %>%
   kable_styling(latex_options = "HOLD_position", font_size = 10)
 ```
   
-Table \@ref(tab:dataextract) shows the first ten rows of the cleaned dataset. It contains 6395 variables and 5 variables in total. The target population of the dataset is a combination of economic families and unattached individuals in Canada. As we known, the information from the dataset is extracted from the Canada Income Survey. Variable "Year" indicates the year of the survey. Variable "Geographical location" indicates where the group of respondents are from. Variable "Income" gives the average value of after-tax income of the respondents in corresponding year and location. Variable "Income decile" gives more information about the variable "Income", by telling us whether each piece of income information represents the average after-tax income of all respondents, the richest 10 percent respondents, the second richest 10 percent respondents, ..., and the poorest 10 percent respondents. This piece of data is extremely helpful because it also gives extra information about the difference regarding the income level between the poorest and richest groups. The last variable "Income range" is not in the original dataset. It indicates the difference in income between the poorest and richest groups, which is obtained from manipulating data from the "Income" column. It's only available at the instances of "Total deciles".
+Table \@ref(tab:dataextract) shows the first ten rows of the cleaned dataset. It contains 6395 variables and 5 variables in total. The target population of the dataset is a combination of economic families and unattached individuals in Canada. As we known, the information from the dataset is extracted from the Canada Income Survey. Variable "Year" indicates the year of the survey. Variable "Geographical location" indicates where the group of respondents are from. Variable "Income" gives the average value of after-tax income of the respondents in corresponding year and location. Variable "Income decile" gives more information about the variable "Income", by telling us whether each piece of income information represents the average after-tax income of all respondents, the richest 10 percent respondents, the second richest 10 percent respondents, ..., and the poorest 10 percent respondents. This piece of data is extremely helpful because it also gives extra information about the difference regarding the income level between the poorest and richest groups. The income disparity is measured by the last variable "Income range", which is not in the original dataset. It indicates the difference in income between the poorest and richest groups, which is obtained from manipulating data from the "Income" column. It's only available at the instances of "Total deciles".
 
 ## Data Visualization
 
@@ -110,32 +110,94 @@ Figure \@ref(fig:figure3) has demonstrated the difference between the lowest and
 
 # Model
 
+By the exploratory analysis of the data, we found that the year and province does have some correlation with the extent of income inequality in Canada. The relationship seems to be linear as the figures generally demonstrate increasing trends. Therefore, to further proceed the analysis and predict the future situation regarding income disparity, a multiple linear regression model will be constructed.
+
+Prior to constructing the model, the dataset is split into the training set and the testing set with a proportion of 8:2. The training set is used to build the multiple linear regression models, and the testing set is used to test the accuracy and unbiasness of the model. R package "tidymodels"[@citetidymodels] is used to split the dataset.
+
+```{r, echo=FALSE, message=FALSE}
+#install.packages("tidymodels")
+# setup library and seed
+library(tidymodels)
+set.seed(1005813130)
+
+# split the data into training and testing sets
+income_model <- income %>%
+  filter(
+         `Income decile` == "Total deciles",
+         `Geographical Location` != "Canada",
+         `Geographical Location` != "Atlantic provinces",
+         `Geographical Location` != "Prairie provinces")
+
+income_model_split <- 
+  initial_split(data = income_model, 
+                prop = 0.80)
+income_model_train <- training(income_model_split)
+income_model_test <- testing(income_model_split)
+```
+
+```{r, echo=FALSE, message=FALSE}
+model1 <- lm(`Income range`~Year+`Geographical Location`, data = income_model_train)
+# summary(model1)
+```
+
+
+```{r, echo=FALSE, message=FALSE}
+model2 <- lm(`Income range`~Year+`Geographical Location`+Year*`Geographical Location`, data = income_model_train)
+# summary(model2)
+```
+
+Two models are initially constructed based on the different possible factors that might have an effect on income inequality in Canada. The first model has continues variable year, categorical variable province as its predictor variables, and the difference between lowest and highest decile of income as its response variable. I would also like to check whether the variables year and province are implicitly related. Therefore, the second model has continues variable year, categorical variable province, and the interaction between them as its predictor variables, and the difference between lowest and highest decile of income as its response variable. To compare these two models to find out which is more accurate and is better at prediction, AIC and BIC tests are carried out, and $R^2$ is examined. Furthermore, the testing dataset is used to test how the two models perform when extra data is involved. RMSE is measured by the testing data to compare the prediction power of the two models. In Appendix \@ref(model-testing), these tests are performed and the test statistics of the two models are compared to select the model with better performance.
+
+As a result, model 2 has a better performance than model 1, and is selected as the final model to model the behavior of Income inequality in Canada as time passed. The assumption check for the model is done in Appendix \@ref(model-assumption-check).
+
+The final model is displayed below:
+
 \begin{equation}
-Pr(\theta | y) = \frac{Pr(y | \theta) Pr(\theta)}{Pr(y)}  (\#eq:bayes)
+Y_{ij} = \beta_{0}+\beta_{1}Year_{i}+\beta_{2}Province_{j}+\beta_{3}Year_{i}Province_{j}  (\#eq:1)
 \end{equation}
 
-Equation \@ref(eq:bayes) seems useful, eh?
+In Model \@ref(eq:1):
 
-Here's a dumb example of how to use some references: In paper we run our analysis in `R` [@citeR]. We also use the `tidyverse` which was written by @thereferencecanbewhatever If we were interested in baseball data then @citeLahman could be useful. 
+  - $Y_{ij}$ is the difference between the highest and lowest decile of average after-tax income in $i^{th}$ year and province $j$.
+  - $\beta_{0}$ is the coefficient for intercept.
+  - $\beta_{1}$ is the coefficient for the continuous year variable.
+  - $\beta_{2}$ is the coefficient corresponding to province $j$.
+  - $\beta_{3}$ is the coefficient for the interaction term between $i^{th}$ year and province $j$.
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
 
+\newpage
 
 # Results
 
+Model \@ref(eq:1) is eventually selected that best demonstrates the correlation between the year, the province of interest, and the difference between highest and lowest decile of average after-tax income of the economic families and unattached individuals in Canada. Figure \@ref(fig:figure4) illustrated a fitted graph of the multiple linear regression model.
+
+```{r figure4, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Difference between lowest and highest average after-tax income in the 10 provinces of Canada between 1976 and 2020", fig.width=7, fig.height=3}
+income_model %>%
+  ggplot(aes(x=Year, y=`Income range`, colour = `Geographical Location`))+geom_point()+theme_minimal()+ylab("Average after-tax income range")+geom_smooth(method='lm')
+```
+
+As the model indicates, as the year increases, the income gap increases. 
+
+```{r, echo=FALSE, message=FALSE}
+
+```
+
+
+
+\newpage
+
 # Discussion
 
-## First discussion point
+## ... by Year
 
 If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
 
-## Second discussion point
-
-## Third discussion point
+## The role of province
 
 ## Weaknesses and next steps
 
 Weaknesses and next steps should also be included.
+
 
 \newpage
 
@@ -143,9 +205,245 @@ Weaknesses and next steps should also be included.
 
 # Appendix {-}
 
+# Model Testing
 
-# Additional details
+R package "modelsummary"[@citemodelsummary] helps to display the coefficients of the two models as well as the result of a series of tests to compare which model performs better.
 
+$R^2$ measures how well the model explains its response variable's variation. If $R^2$ is low, it indicates that the model doesn't fit the data well. By Table \@ref(tab:table2), in Model 1, 84.5% of the variability is explained, and in Model 2, 87.4% of the variability is explained. Both models demonstrate a pretty high  $R^2$ value.
+
+AIC and BIC measure the prediction ability of the multiple linear regression model. AIC(Akaike’s Information Criteria) focuses on how well the model fits unknown data, while BIC(Bayesian Information Criteria) focuses on the true model and favours simpler models(5). Lower AIC and BIC both indicate that the model has better prediction power. By Table \@ref(tab:table2), Model 2 has slightly lower AIC and BIC than Model 1, implying that Model 2 has more prediction power.
+
+```{r table2, echo=FALSE, message=FALSE}
+#install.packages("modelsummary")
+library(modelsummary)
+modelsummary(list(model1, model2), title = "Comparing Model 1 and Model 2 Statistics")
+```
+
+```{r table3, echo=FALSE, message=FALSE}
+# predict based on testing dataset
+pred1 <- predict(model1, newdata = income_model_test)
+pred2 <- predict(model2, newdata = income_model_test)
+
+error1 <- income_model_test$`Income range` - pred1
+error2 <- income_model_test$`Income range` - pred2
+
+RMSE1 <- sqrt(mean(error1^2))
+RMSE2 <- sqrt(mean(error2^2))
+
+table_RMSE <- tibble(`Model 1` = c(17227, 17293.8),
+                     `Model 2` = c(15753.8, 15052.8),
+                     dataset = c("train","test"))
+
+table_RMSE %>%
+  kable(
+    caption = "Comparing RMSE between two models",
+col.names=c("Model 1", "Model 2", "Dataset"),
+linesep = "", digits = 1, booktabs=TRUE) %>%
+  kable_styling(latex_options = "HOLD_position", font_size = 10)
+```
+
+The RMSE measures how far the predicted values of the multiple linear regression model are from their actual values on average. The lower the RMSE, the better the model preforms regarding prediction. Based on Table \@ref(tab:table3), the RMSE for both two models are very similar for training and testing dataset, indicating that the dataset is unbiased and the two models are performing as expected. Moreover, Model 2 has lower RMSE than Model 2 for both training and testing dataset, indicating that Model 2 predicts data more accurately.
+
+\newpage
+
+# Model Assumption Check
+
+```{r figure5, echo=FALSE, message=FALSE, fig.cap="Checking the assumptions of linear model", fig.width=6}
+par(mfrow = c(2, 2))
+plot(model2)
+```
+
+Check for assumption:
+Assumptions to the multiple linear regression model are checked to ensure that the model is valid for this dataset. Figure \@ref(fig:figure5) shows the plots used to check for the assumption.
+
+The Residuals vs Fitted plot checks for the linear relationship assumption. Since the red line is almost horizontal and there isn't any pattern, the model satisfies the linearity assumption. The Normal QQ plot checks for the residual normality assumption. Since almost all the dots are on the dashed line, the residuals follow a normal distribution. The Scale-Location plot checks for the homoscedasticity assumption. The red line is horizontal and the dots are evenly scattered, indicating that the variance of the residuals is constant(4). 
+
+\newpage
+
+# Datasheet
+
+
+**Motivation**
+
+1. *For what purpose was the dataset created? Was there a specific task in mind? Was there a specific gap that needed to be filled? Please provide a description.*
+    - The dataset was created to analyze the relationship between time period, geographical location, and the income of the households in Canada. 
+    
+2. *Who created the dataset (for example, which team, research group) and on behalf of which entity (for example, company, institution, organization)?*
+    - The dataset was created by the Statistics Canada, and it was also published by Statistics Canada on the Open Government Portal of Canada.
+    
+3. *Who funded the creation of the dataset? If there is an associated grant, please provide the name of the grantor and the grant name and number.*
+    - The creation of the dataset was funded by the government of Canada.
+    
+4. *Any other comments?*
+    - The source of the dataset is the Canadian Income Survey.
+
+**Composition**
+
+1. *What do the instances that comprise the dataset represent (for example, documents, photos, people, countries)? Are there multiple types of instances (for example, movies, users, and ratings; people and interactions between them; nodes and edges)? Please provide a description.*
+	- The instances os the dataset represent the people who are selected to take the survey, these people are respectively grouped by year, region, family type, income type. 
+	
+2. *How many instances are there in total (of each type, if appropriate)?*
+	- The original dataset has 173043 instances. After it is cleaned, it contains 9395 instances.
+	
+3. *Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set? If the dataset is a sample, then what is the larger set? Is the sample representative of the larger set (for example, geographic coverage)? If so, please describe how this representativeness was validated/verified. If it is not representative of the larger set, please describe why not (for example, to cover a more diverse range of instances, because instances were withheld or unavailable).*
+	- The dataset does contain all possible instances.
+	
+4. *What data does each instance consist of? "Raw" data (for example, unprocessed text or images) or features? In either case, please provide a description.*
+	- Each instance is consist of the year, place, family type, income type, income value of the corresponding group of people of Canada.
+	
+5. *Is there a label or target associated with each instance? If so, please provide a description.*
+	- No
+	
+6. *Is any information missing from individual instances? If so, please provide a description, explaining why this information is missing (for example, because it was unavailable). This does not include intentionally removed information, but might include, for example, redacted text.*
+	- There are some information about income value from some instances because they are unavailable in the original dataset.
+	
+7. *Are relationships between individual instances made explicit (for example, users' movie ratings, social network links)? If so, please describe how these relationships are made explicit.*
+	- The relationships between individual instances are explicit. Some instances represent the same group of people, summarize different income statistics(average, highest decile, lowest decile, etc).
+	
+8. *Are there recommended data splits (for example, training, development/validation, testing)? If so, please provide a description of these splits, explaining the rationale behind them.*
+	- No.
+	
+9. *Are there any errors, sources of noise, or redundancies in the dataset? If so, please provide a description.*
+	- No.
+	
+10. *Is the dataset self-contained, or does it link to or otherwise rely on external resources (for example, websites, tweets, other datasets)? If it links to or relies on external resources, a) are there guarantees that they will exist, and remain constant, over time; b) are there official archival versions of the complete dataset (that is, including the external resources as they existed at the time the dataset was created); c) are there any restrictions (for example, licenses, fees) associated with any of the external resources that might apply to a dataset consumer? Please provide descriptions of all external resources and any restrictions associated with them, as well as links or other access points, as appropriate.*
+	- The dataset is linked to the Canadian Income Survey that is conducted annually.
+	
+11. *Does the dataset contain data that might be considered confidential (for example, data that is protected by legal privilege or by doctor-patient confidentiality, data that includes the content of individuals' non-public communications)? If so, please provide a description.*
+	- The data is protected by confidentiality rules that prevent individuals from being identified.
+	
+12. *Does the dataset contain data that, if viewed directly, might be offensive, insulting, threatening, or might otherwise cause anxiety? If so, please describe why.*
+	- No.
+	
+13. *Does the dataset identify any sub-populations (for example, by age, gender)? If so, please describe how these subpopulations are identified and provide a description of their respective distributions within the dataset.*
+	- Yes, the dataset contains sub-populations by geographical location, family type, etc. The distribution is even.
+	
+14. *Is it possible to identify individuals (that is, one or more natural persons), either directly or indirectly (that is, in combination with other data) from the dataset? If so, please describe how.*
+	- No.
+	
+15. *Does the dataset contain data that might be considered sensitive in any way (for example, data that reveals race or ethnic origins, sexual orientations, religious beliefs, political opinions or union memberships, or locations; financial or health data; biometric or genetic data; forms of government identification, such as social security numbers; criminal history)? If so, please provide a description.*
+	- The dataset contain income statistics of different groups of Canadians which might be considered sensitive.
+	
+16. *Any other comments?*
+	- No.
+
+**Collection process**
+
+1. *How was the data associated with each instance acquired? Was the data directly observable (for example, raw text, movie ratings), reported by subjects (for example, survey responses), or indirectly inferred/derived from other data (for example, part-of-speech tags, model-based guesses for age or language)? If the data was reported by subjects or indirectly inferred/derived from other data, was the data validated/verified? If so, please describe how.*
+	- The data is extracted from the Canada Income Survey responses and is validated.
+	
+2. *What mechanisms or procedures were used to collect the data (for example, hardware apparatuses or sensors, manual human curation, software programs, software APIs)? How were these mechanisms or procedures validated?*
+	- The data was collected through manual human curation, by conducting online surveys to the sampled respondents.
+	
+3. *If the dataset is a sample from a larger set, what was the sampling strategy (for example, deterministic, probabilistic with specific sampling probabilities)?*
+	- The respondents of the surveys were drawn from stratified probability sampling.
+	
+4. *Who was involved in the data collection process (for example, students, crowdworkers, contractors) and how were they compensated (for example, how much were crowdworkers paid)?*
+	- The telephone interviews prior to the official survey were conducted by interviewers working in regional offices. The surveys which were online have data collected automatically.
+	
+5. *Over what timeframe was the data collected? Does this timeframe match the creation timeframe of the data associated with the instances (for example, recent crawl of old news articles)? If not, please describe the timeframe in which the data associated with the instances was created.*
+	- The data was collected annually from 1976 to 2020. Each round of survey was lasted for 6 consecutive months.
+	
+6. *Were any ethical review processes conducted (for example, by an institutional review board)? If so, please provide a description of these review processes, including the outcomes, as well as a link or other access point to any supporting documentation.*
+	- No.
+	
+7. *Did you collect the data from the individuals in question directly, or obtain it via third parties or other sources (for example, websites)?*
+	- I obtained the data via the Open Government Portal of Statistics Canada.
+	
+8. *Were the individuals in question notified about the data collection? If so, please describe (or show with screenshots or other information) how notice was provided, and provide a link or other access point to, or otherwise reproduce, the exact language of the notification itself.*
+	- Yes. The repondents of the surveys were notified via a telephone interview that they were asked to complete an online servey.
+	
+9. *Did the individuals in question consent to the collection and use of their data? If so, please describe (or show with screenshots or other information) how consent was requested and provided, and provide a link or other access point to, or otherwise reproduce, the exact language to which the individuals consented.*
+	- Yes, the response to the survey was voluntary. 
+	
+10. *If consent was obtained, were the consenting individuals provided with a mechanism to revoke their consent in the future or for certain uses? If so, please provide a description, as well as a link or other access point to the mechanism (if appropriate).*
+	- It doesn't seem like the individuals were provided with a mechanism to revoke their consent in future, because the survey data is made public already.
+	
+11. *Has an analysis of the potential impact of the dataset and its use on data subjects (for example, a data protection impact analysis) been conducted? If so, please provide a description of this analysis, including the outcomes, as well as a link or other access point to any supporting documentation.*
+	- An analysis of the potential impact of the dataset and its use on data subjects was not conducted.
+	
+12. *Any other comments?*
+	- No.
+
+**Preprocessing/cleaning/labeling**
+
+1. *Was any preprocessing/cleaning/labeling of the data done (for example, discretization or bucketing, tokenization, part-of-speech tagging, SIFT feature extraction, removal of instances, processing of missing values)? If so, please provide a description. If not, you may skip the remaining questions in this section.*
+	- Yes. Instances that are not related to the objective of this report is removed. Missing values are removed. Variables were renamed to better analyze the data.
+	
+2. *Was the "raw" data saved in addition to the preprocessed/cleaned/labeled data (for example, to support unanticipated future uses)? If so, please provide a link or other access point to the "raw" data.*
+	- Yes, the raw data is in the inputs folder called "income.csv". It can be obtained from the repository's inputs folder or the link: https://open.canada.ca/data/en/dataset/b06716c0-eea7-4267-87b6-4faaa2679f22.
+	
+3. *Is the software that was used to preprocess/clean/label the data available? If so, please provide a link or other access point.*
+	- R studio software and packages associated with it were used to clean the data.
+	
+4. *Any other comments?*
+	- No.
+
+**Uses**
+
+1. *Has the dataset been used for any tasks already? If so, please provide a description.*
+	- The dataset hasn't been used for any other tasks.
+	
+2. *Is there a repository that links to any or all papers or systems that use the dataset? If so, please provide a link or other access point.*
+	- Repository for this paper that used the dataset: https://github.com/Alicia-y/Telling-stories-with-data-final-paper
+	
+3. *What (other) tasks could the dataset be used for?*
+	- Analyze the difference in income level between income types and family types.
+	
+4. *Is there anything about the composition of the dataset or the way it was collected and preprocessed/cleaned/labeled that might impact future uses? For example, is there anything that a dataset consumer might need to know to avoid uses that could result in unfair treatment of individuals or groups (for example, stereotyping, quality of service issues) or other risks or harms (for example, legal risks, financial harms)? If so, please provide a description. Is there anything a dataset consumer could do to mitigate these risks or harms?*
+	- No.
+	
+5. *Are there tasks for which the dataset should not be used? If so, please provide a description.*
+	- Should not be used for disclosure of personal information.
+	
+6. *Any other comments?*
+	- No.
+
+**Distribution**
+
+1. *Will the dataset be distributed to third parties outside of the entity (for example, company, institution, organization) on behalf of which the dataset was created? If so, please provide a description.*
+	- The dataset is public and available to everyone. The Open Government License granted everyone's rights to access and use the data.
+	
+2. *How will the dataset be distributed (for example, tarball on website, API, GitHub)? Does the dataset have a digital object identifier (DOI)?*
+	- The dataset will be distributed by Github.
+	
+3. *When will the dataset be distributed?*
+	- The dataset will be distributed on April 27th, 2022.
+	
+4. *Will the dataset be distributed under a copyright or other intellectual property (IP) license, and/or under applicable terms of use (ToU)? If so, please describe this license and/ or ToU, and provide a link or other access point to, or otherwise reproduce, any relevant licensing terms or ToU, as well as any fees associated with these restrictions.*
+	- The dataset will be distributed under the MIT License.
+	
+5. *Have any third parties imposed IP-based or other restrictions on the data associated with the instances? If so, please describe these restrictions, and provide a link or other access point to, or otherwise reproduce, any relevant licensing terms, as well as any fees associated with these restrictions.*
+	-  The Open Government License of Canada(https://open.canada.ca/en/open-government-licence-canada) granted the rights to use and modify the data with several exemptions.
+	
+6. *Do any export controls or other regulatory restrictions apply to the dataset or to individual instances? If so, please describe these restrictions, and provide a link or other access point to, or otherwise reproduce, any supporting documentation.*
+	- No.
+
+**Maintenance**
+
+1. *Who will be supporting/hosting/maintaining the dataset?*
+	- The owner of the repository where the dataset is in.
+	
+2. *How can the owner/curator/manager of the dataset be contacted (for example, email address)?*
+	- The email address is provided in the github. The email address of the original dataset is infostats@statcan.gc.ca.
+	
+3. *Is there an erratum? If so, please provide a link or other access point.*
+	- There is no erratum.
+	
+4. *Will the dataset be updated (for example, to correct labeling errors, add new instances, delete instances)? If so, please describe how often, by whom, and how updates will be communicated to dataset consumers (for example, mailing list, GitHub)?*
+	- The original dataset will be updated annually. Followed by that, the cleaned dataset in the github will be updated.
+	
+5. *If the dataset relates to people, are there applicable limits on the retention of the data associated with the instances (for example, were the individuals in question told that their data would be retained for a fixed period of time and then deleted)? If so, please describe these limits and explain how they will be enforced.*
+	- No.
+	
+6. *Will older versions of the dataset continue to be supported/hosted/maintained? If so, please describe how. If not, please describe how its obsolescence will be communicated to dataset consumers.*
+	- Yes, the older versions of the dataset will be maintained annually by adding more instances because the Canada Income Survey is conducted annually.
+	
+7. *If others want to extend/augment/build on/contribute to the dataset, is there a mechanism for them to do so? If so, please provide a description. Will these contributions be validated/verified? If so, please describe how. If not, why not? Is there a process for communicating/distributing these contributions to dataset consumers? If so, please provide a description.*
+	- No.
+	
+8. *Any other comments?*
+	- No.
 
 \newpage
 
@@ -158,4 +456,9 @@ https://www.nytimes.com/2020/07/01/opinion/economic-inequality-moral-philosophy.
 (2)https://www.conferenceboard.ca/hcp/hot-topics/canInequality.aspx#:~:text=Income%20inequality%20in%20Canada%20has,income%20Canadians%20also%20lost%20share.
 
 https://www23.statcan.gc.ca/imdb/p2SV.pl?Function=getSurvey&SDDS=5200
+
+(4)http://www.sthda.com/english/articles/39-regression-model-diagnostics/161-linear-regression-assumptions-and-diagnostics-in-r-essentials/
+
+(5)https://stats.stackexchange.com/questions/577/is-there-any-reason-to-prefer-the-aic-or-bic-over-the-other
+
 
