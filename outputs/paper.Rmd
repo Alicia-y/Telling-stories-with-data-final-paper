@@ -163,26 +163,45 @@ In Model \@ref(eq:1):
   - $\beta_{1}$ is the coefficient for the continuous year variable.
   - $\beta_{2}$ is the coefficient corresponding to province $j$.
   - $\beta_{3}$ is the coefficient for the interaction term between $i^{th}$ year and province $j$.
+  - The baseline of this model is year 0 and Alberta province.
 
 
 \newpage
 
 # Results
 
-Model \@ref(eq:1) is eventually selected that best demonstrates the correlation between the year, the province of interest, and the difference between highest and lowest decile of average after-tax income of the economic families and unattached individuals in Canada. Figure \@ref(fig:figure4) illustrated a fitted graph of the multiple linear regression model.
+Model \@ref(eq:1) is eventually selected that best demonstrates the correlation between the year, the province of interest, and the difference between highest and lowest decile of average after-tax income of the economic families and unattached individuals in Canada. Figure \@ref(fig:figure4) illustrated a fitted graph of the multiple linear regression model, where each line represents the trend of income inequality as time passed in respect to each corresponding province. As the model indicates, as the year increases, the income gap increases. In the meanwhile, the difference in province also does have an effect on income inequality.
 
 ```{r figure4, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Difference between lowest and highest average after-tax income in the 10 provinces of Canada between 1976 and 2020", fig.width=7, fig.height=3}
 income_model %>%
   ggplot(aes(x=Year, y=`Income range`, colour = `Geographical Location`))+geom_point()+theme_minimal()+ylab("Average after-tax income range")+geom_smooth(method='lm')
 ```
 
-As the model indicates, as the year increases, the income gap increases. 
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+summary_table <-tibble(
+  Name = c("Intercept", "Year","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Nova Scotia","Ontario","Prince Edward Island ","Quebec","Saskatchewan","Year: British Columbia","Year: Manitoba","Year: New Brunswick","Year: Newfoundland and Labrador","Year: Nova Scotia","Year: Ontario","Year: Prince Edward Island ","Year: Quebec","Year: Saskatchewan"),
+  Coefficients = c(summary(model2)$coefficients[1,1], summary(model2)$coefficients[2,1], summary(model2)$coefficients[3,1], summary(model2)$coefficients[4,1], summary(model2)$coefficients[5,1], summary(model2)$coefficients[6,1], summary(model2)$coefficients[7,1], summary(model2)$coefficients[8,1], summary(model2)$coefficients[9,1], summary(model2)$coefficients[10,1], summary(model2)$coefficients[11,1], summary(model2)$coefficients[12,1], summary(model2)$coefficients[13,1], summary(model2)$coefficients[14,1], summary(model2)$coefficients[15,1], summary(model2)$coefficients[16,1], summary(model2)$coefficients[17,1], summary(model2)$coefficients[18,1], summary(model2)$coefficients[19,1], summary(model2)$coefficients[20,1]),
+  `95% Confidence Interval Lower Bound` = c(confint(model2)[1,1], confint(model2)[2,1], confint(model2)[3,1], confint(model2)[4,1], confint(model2)[5,1], confint(model2)[6,1], confint(model2)[7,1], confint(model2)[8,1], confint(model2)[9,1], confint(model2)[10,1], confint(model2)[11,1], confint(model2)[12,1], confint(model2)[13,1], confint(model2)[14,1], confint(model2)[15,1], confint(model2)[16,1], confint(model2)[17,1], confint(model2)[18,1], confint(model2)[19,1], confint(model2)[20,1]),
+  `95% Confidence Interval Upper Bound` = c(confint(model2)[1,2], confint(model2)[2,2], confint(model2)[3,2], confint(model2)[4,2], confint(model2)[5,2], confint(model2)[6,2], confint(model2)[7,2], confint(model2)[8,2], confint(model2)[9,2], confint(model2)[10,2], confint(model2)[11,2], confint(model2)[12,2], confint(model2)[13,2], confint(model2)[14,2], confint(model2)[15,2], confint(model2)[16,2], confint(model2)[17,2], confint(model2)[18,2], confint(model2)[19,2], confint(model2)[20,2])
+)
 
 ```
 
+```{r table1, echo=FALSE, message=FALSE, warning=FALSE}
+summary_table %>%
+  kable(
+    caption = "Model Coefficients and 95 percent Confidence Interval",
+col.names=c(" ", "Coefficients", "Confidence Interval Lower Bound", "Confidence Interval Upper Bound"),
+linesep = "", digits = 1, booktabs=TRUE) %>%
+  kable_styling(latex_options = "HOLD_position", font_size = 8)
+```
 
+P-value is an important value used to determine whether a predictor variable has significant impact on the responce variable. It measures ...
+
+By examining the P-values of all the predictor variables of the model, we found that they are all less than 0.05. 
+
+Table \@ref(tab:table1) shows the coefficients of the predictor variables of Model \@ref(eq:1). The baseline of the model is year 0 and Alberta province, 
 
 \newpage
 
@@ -218,6 +237,8 @@ AIC and BIC measure the prediction ability of the multiple linear regression mod
 library(modelsummary)
 modelsummary(list(model1, model2), title = "Comparing Model 1 and Model 2 Statistics")
 ```
+
+\newpage
 
 ```{r table3, echo=FALSE, message=FALSE}
 # predict based on testing dataset
