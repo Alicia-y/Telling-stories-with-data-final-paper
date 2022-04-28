@@ -15,7 +15,7 @@ library(tidyverse)
 library(dplyr)
 
 # Read in the raw data. 
-raw_data<- read_csv(here::here("STA304/Telling-stories-with-data-final-paper/inputs/income.csv"))
+raw_data<- read_csv(here::here("Telling-stories-with-data-final-paper/inputs/income.csv"))
 
 # Just keep some variables that may be of interest
 raw_data <- raw_data %>%
