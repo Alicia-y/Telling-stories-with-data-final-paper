@@ -1,11 +1,11 @@
 ---
 title: "Evolution of Income Inequality in Canada"
-subtitle: "My subtitle if needed"
+subtitle: "It's becoming a more serious issue as over time, especially in the richest provinces."
 author: 
   - Alicia Yang
 thanks: "Code and data are available at: https://github.com/Alicia-y/Telling-stories-with-data-final-paper"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "People have claimed that the income disparity in Canada has increased alongside with the rapid growth of its economy. To investigate more on this issue, this paper aims to explore how the mental health issue interacts with the reported crimes in Canada. By utilizing the data from Statistics Canada, we found that increase in mental health cases does have a positive correlation with the crime rates in Canada. More specifically, teenagers suffering from mental illness are much more likely to be involved in criminal activities. In addition, implications behind this correlation is discussed and possible solutions is proposed."
+abstract: "People have claimed that the income disparity in Canada has increased alongside with the rapid growth of its economy. To explore whether and how income disparity became a serious issue in Canada, this paper aims to investigate the relationship between time, province, and income inequality in Canada. By utilizing the data from Statistics Canada, we found that income inequality continuously increase over time and is a greater issue in more developed provinces. Particularly, it is closely related to the prosperity of a region. In addition, implications and possible reasons behind this correlation is discussed and possible solutions to the problem of income disparity is proposed."
 output:
   bookdown::pdf_document2
 toc: TRUE
@@ -28,21 +28,16 @@ library(kableExtra)
 # Introduction
 
 In recent decades the world as a whole is developing fast economically, and one evidence of which is the rise in income level. As more countries become more developed in terms of their economy and eventually overcome their issues of poverty, their governments have gradually shift their goal to dealing with the problem of economic inequality. 
-It concerns how the wealth and income of the population is distributed. Although we are generally living higher quality lives and getting higher incomes, another problem is being put forward by people who are claiming that the gap between the rich and poor is getting larger due to technological advancement, globalization, countries' governmental structure and policies, which betters off the people who are already wealthy by making it easy for them to seek for more opportunities, thus, snowballing their assets faster. Income disparity can be a huge issue. It makes the income per capita of a country less reflective of its people's true living quality, because income per capita does not tell the distribution of the income. The richest people may pull up the statistics about the average/median income level, but it doesn't mean the country is performing well economically as a whole. In addition to that, income inequality also have other potential negative effects. It could reduce the stability of the economy and increase the risk of financial crisis. It could also result in corruption, misallocation of resources as the rich is empowered economically, socially and even politically.
-Canada is one of the country in the world that provides the most benefits and welfare, yet people still claimed that the economic inequality is rising along with the income over the past 2 decades(2). Therefore, I'm interested in whether this is a serious issue in Canada. If so, in which regions and what period of time is it a serious issue? And is it possible to predict how the disparity of income change in future?
+It concerns how the wealth and income of the population is distributed. Although we are generally living higher quality lives and getting higher incomes, another problem is being put forward by people who are claiming that the gap between the rich and poor is getting larger due to technological advancement, globalization, countries' governmental structure and policies, which betters off the people who are already wealthy by making it easy for them to seek for more opportunities, thus, snowballing their assets faster. Income disparity can be a huge issue. It makes the income per capita of a country less reflective of its people's true living quality, because income per capita does not tell the distribution of the income. The richest people may pull up the statistics about the average/median income level, but it doesn't mean the country is performing well economically as a whole. In addition to that, income inequality also have other potential negative effects. It could reduce the stability of the economy and increase the risk of financial crisis. It could also result in corruption, mis-allocation of resources as the rich is empowered economically, socially and even politically [@cite1].
+Canada is one of the country in the world that provides the most benefits and welfare, yet people still claimed that the economic inequality is rising along with the income over the past 2 decades [@cite2]. Therefore, I'm interested in whether income inequality is a serious issue in Canada. If so, in which regions and what period of time is it a serious issue? And is it possible to predict how the disparity of income change in future?
 
-The data used in this report is obtained from Open Government Data of Statistics Canada. The dataset is called "Upper income limit, income share and average income by economic family type and income decile", and it provides different kinds information about the income level of the households of Canada between 1976 and 2020 by the Canadian Income Survey. In this dataset, I'm interested in the year the data is from, the geographical location, the income decile so that we could observe the difference between the lowest and highest decile, and the actual value of the income. In section \@ref(data), a cleaned dataset is obtained and explained to perform further analysis. Visualizations in the forms of tables and figures are presented to help to explain the possible correlation between year, provinces and the income disparity in Canada. By data visualization, I've primarily assumed that the income disparity in Canada has generally increased as time passed and presents different trends in different provinces before constructing the model. In section \@ref(model), a multiple linear regression model is constructed to justify the relationship between year, province and income inequality, and to make future predictions. All the findings alongside with
-
-Associated with 
-
-Difficult and challenging to deal with
-In section \@ref(model), a model is constructed to justify the relationship and to make future predictions. All findings related to this topic is presented in section \@ref(results). A discussion is carried out in section \@ref(discussion) on the implications of the findings, possible solutions to this issue, as well as the limitations of this paper.
+The data used in this report is obtained from Open Government Data of Statistics Canada. The dataset is called "Upper income limit, income share and average income by economic family type and income decile", and it provides different kinds information about the income level of the households of Canada between 1976 and 2020 by the Canadian Income Survey. In this dataset, I'm interested in the year the data is from, the geographical location, the income decile so that we could observe the difference between the lowest and highest decile, and the actual value of the income. In section \@ref(data), a cleaned dataset is obtained and explained to perform further analysis. Visualizations in the forms of tables and figures are presented to help to explain the possible correlation between year, provinces and the income disparity in Canada. By data visualization, I've primarily assumed that the income disparity in Canada has generally increased as time passed and presents different trends in different provinces before constructing the model. In section \@ref(model), a multiple linear regression model is constructed to justify the relationship between year, province and income inequality, and to make future predictions. The interpretation of the final model along with all the findings regarding the evolution of income inequality is presented in section \@ref(results). A discussion is carried out in section \@ref(discussion) on the implications of the findings regarding time and geographical location, and possible solutions to this issue in federal and provincial level, as well as the weaknesses and future steps of this paper.
 
 # Data
 
 ## Dataset Description and Methodology
 
-The dataset, which is a summary of the income-related statistics in Canada between 1976 and 2020, is obtained from the Open Government Portal of Statistics Canada. The source of the data is from the Canadian Income Survey conducted annually. The survey covers all the possible population in Canada except for the people and households living in remote areas or indigenous settlements. It doesn't really affect the outcome of the survey, because these people only take up less than 2 percent of the population(). The selected respondents were drawn from the Labour Force Survey samples, which is based on a stratified probability sampling(). To reduce some non-sampling errors, telephone interviews ware conducted prior to the main survey to increase the response rate of the selected participants Once they give consent to completing the survey, they will be able to complete it in an online form. Respondents are protected from the confidentiality rules, so that their privacy won't be disclosed after the survey is made public.
+The dataset, which is a summary of the income-related statistics in Canada between 1976 and 2020, is obtained from the Open Government Portal of Statistics Canada. The source of the data is from the Canadian Income Survey conducted annually. The survey covers all the possible population in Canada except for the people and households living in remote areas or indigenous settlements. It doesn't really affect the outcome of the survey, because these people only take up less than 2 percent of the population [@cite3]. The selected respondents were drawn from the Labour Force Survey samples, which is based on a stratified probability sampling [@cite3]. To reduce some non-sampling errors, telephone interviews ware conducted prior to the main survey to increase the response rate of the selected participants Once they give consent to completing the survey, they will be able to complete it in an online form. Respondents are protected from the confidentiality rules, so that their privacy won't be disclosed after the survey is made public.
 One possible bias came with the survey methodology was the over-coverage of the units that are not the target population and the under-coverage of certain sub-population that should be included in the survey, such as certain remote areas. 
 
 
@@ -55,6 +50,7 @@ income <- read_csv(here::here("inputs/cleaned_data.csv"))
 
 
 ```{r dataextract, echo=FALSE, message=FALSE}
+# create a table showing the first ten rows of the cleaned data
 income %>%
   slice(1:10) %>%
   kable(
@@ -71,7 +67,7 @@ Table \@ref(tab:dataextract) shows the first ten rows of the cleaned dataset. It
 In order to get further familiarized with the dataset and estimate the possible associations between the nation's average income and other factors, exploratory analysis is carried out by conducting data visualizations to observe whether the patterns between certain factors matches the generally expectations of the trend of income and income inequality in Canada. First of all, we will have a look through the overall trend of income level in Canada.
 
 ```{r figure1, echo=FALSE, message=FALSE, fig.cap="Average after-tax income in Canada per year between 1976 and 2020", fig.width=6, fig.height=3}
-# 
+# create a line graph showing the income level trend in Canada
 income %>%
   filter(`Income decile` == "Total deciles",
          `Geographical Location` == "Canada") %>%
@@ -83,6 +79,7 @@ income %>%
 As Figure \@ref(fig:figure1) has demonstrated, Canadians have experienced a rapidly growing income level since 1976 to now. Early 1980s and 1990s are basically the only two periods of times that we see an obvious pattern of the decrease in income, and they all lasted for less than five years. This phenomenon is expected as during the time of early 1980s and 1990s, Canada was experiencing recession due to the change in monetary policy and a side effect of the cold war. As a result, the unemployment rate rose and due to an increase in the competitiveness of workforce, people's incomes have dropped. However, during other times, the income level have always demonstrated an increasing trend, indicating that without negative external forces, Canada generally has expanded its economy and enhanced its people's life quality well. The average after-tax income for economic families and unattached individuals in Canada has rose from around \$72400 in 1976 to \$96000 in 2020.
 
 ```{r figure2, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Trend of lowest and highest decile of sverage after-tax income in Canada between 1976 and 2020", fig.width=7, fig.height=3.1}
+# create a line graph showing the gap between rich and poor in terms of income level in Canada
 income %>%
   filter(
          `Income decile` == "Lowest decile" | `Income decile` == "Highest decile",
@@ -95,6 +92,7 @@ income %>%
 Figure \@ref(fig:figure2) is an illustration of how the income level of the richest and poorest groups of economic families and unattached individuals differ between the year of 1976 and 2020. The blue line indicates the trend of the lowest decile of the average after-tax income in Canada, which barely increased. In fact, the lowest decile of average after-tax income was \$9200 in 1976, but only \$15000 after 44 years in 2020. On the other hand, the red line indicates the trend of the highest decile of the average after-tax income in Canada, which has a very clear increasing pattern, by looking at the data, it increased for $86000 between 1976 and 2020, which is more than 10 times the income level increase of the lowest decile. By comparing the two lines, we can see that the income inequality in Canada as a whole is getting larger as the two lines drift further away from each other as time passed.
 
 ```{r figure3, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Difference between lowest and highest average after-tax income in the 10 provinces of Canada between 1976 and 2020", fig.width=7, fig.height=3.3}
+# create a scatterplot showing the income inequality issue in each province of Canada
 income %>%
   filter(
          `Income decile` == "Total deciles",
@@ -136,14 +134,14 @@ income_model_test <- testing(income_model_split)
 ```
 
 ```{r, echo=FALSE, message=FALSE}
+# construct multiple linear regression model 1 with the training set
 model1 <- lm(`Income range`~Year+`Geographical Location`, data = income_model_train)
-# summary(model1)
 ```
 
 
 ```{r, echo=FALSE, message=FALSE}
+# construct multiple linear regression model 2 with the training set
 model2 <- lm(`Income range`~Year+`Geographical Location`+Year*`Geographical Location`, data = income_model_train)
-# summary(model2)
 ```
 
 Two models are initially constructed based on the different possible factors that might have an effect on income inequality in Canada. The first model has continues variable year, categorical variable province as its predictor variables, and the difference between lowest and highest decile of income as its response variable. I would also like to check whether the variables year and province are implicitly related. Therefore, the second model has continues variable year, categorical variable province, and the interaction between them as its predictor variables, and the difference between lowest and highest decile of income as its response variable. To compare these two models to find out which is more accurate and is better at prediction, AIC and BIC tests are carried out, and $R^2$ is examined. Furthermore, the testing dataset is used to test how the two models perform when extra data is involved. RMSE is measured by the testing data to compare the prediction power of the two models. In Appendix \@ref(model-testing), these tests are performed and the test statistics of the two models are compared to select the model with better performance.
@@ -158,12 +156,14 @@ Y_{ij} = \beta_{0}+\beta_{1}Year_{i}+\beta_{2}Province_{j}+\beta_{3}Year_{i}Prov
 
 In Model \@ref(eq:1):
 
-  - $Y_{ij}$ is the difference between the highest and lowest decile of average after-tax income in $i^{th}$ year and province $j$.
+  - $Y_{ij}$ is the difference between the highest and lowest decile of average after-tax income of economic families and unattched individuals of Canada in $i^{th}$ year and province $j$.
   - $\beta_{0}$ is the coefficient for intercept.
   - $\beta_{1}$ is the coefficient for the continuous year variable.
   - $\beta_{2}$ is the coefficient corresponding to province $j$.
   - $\beta_{3}$ is the coefficient for the interaction term between $i^{th}$ year and province $j$.
   - The baseline of this model is year 0 and Alberta province.
+
+P-value is an essential value used to determine whether a predictor variable has significant impact on the response variable. It measures the probability that the observed data would occur given that the null hypothesis is true. In the context of a multiple linear regression model in this paper, null hypothesis is the hypothesis that there is no relationship between the predictor variable and the response variable [@cite6]. The common threshold of p-value is 0.05, so we will use this threshold in this paper. By examining the p-values of all the predictor variables of the model, we found that they are all less than 0.05, indicating that the hypothesis that there is no relationship between the variables of interest is rejected. As a result, none of the predictor variables of this model will be reduced because they all have some signifant impact on the response variable.
 
 
 \newpage
@@ -173,12 +173,14 @@ In Model \@ref(eq:1):
 Model \@ref(eq:1) is eventually selected that best demonstrates the correlation between the year, the province of interest, and the difference between highest and lowest decile of average after-tax income of the economic families and unattached individuals in Canada. Figure \@ref(fig:figure4) illustrated a fitted graph of the multiple linear regression model, where each line represents the trend of income inequality as time passed in respect to each corresponding province. As the model indicates, as the year increases, the income gap increases. In the meanwhile, the difference in province also does have an effect on income inequality.
 
 ```{r figure4, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Difference between lowest and highest average after-tax income in the 10 provinces of Canada between 1976 and 2020", fig.width=7, fig.height=3}
+# plot the graph with the regression lines
 income_model %>%
   ggplot(aes(x=Year, y=`Income range`, colour = `Geographical Location`))+geom_point()+theme_minimal()+ylab("Average after-tax income range")+geom_smooth(method='lm')
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# summarize the value and confidence interval of the coefficients in a table
 summary_table <-tibble(
   Name = c("Intercept", "Year","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Nova Scotia","Ontario","Prince Edward Island ","Quebec","Saskatchewan","Year: British Columbia","Year: Manitoba","Year: New Brunswick","Year: Newfoundland and Labrador","Year: Nova Scotia","Year: Ontario","Year: Prince Edward Island ","Year: Quebec","Year: Saskatchewan"),
   Coefficients = c(summary(model2)$coefficients[1,1], summary(model2)$coefficients[2,1], summary(model2)$coefficients[3,1], summary(model2)$coefficients[4,1], summary(model2)$coefficients[5,1], summary(model2)$coefficients[6,1], summary(model2)$coefficients[7,1], summary(model2)$coefficients[8,1], summary(model2)$coefficients[9,1], summary(model2)$coefficients[10,1], summary(model2)$coefficients[11,1], summary(model2)$coefficients[12,1], summary(model2)$coefficients[13,1], summary(model2)$coefficients[14,1], summary(model2)$coefficients[15,1], summary(model2)$coefficients[16,1], summary(model2)$coefficients[17,1], summary(model2)$coefficients[18,1], summary(model2)$coefficients[19,1], summary(model2)$coefficients[20,1]),
@@ -189,6 +191,7 @@ summary_table <-tibble(
 ```
 
 ```{r table1, echo=FALSE, message=FALSE, warning=FALSE}
+# display the summarized table
 summary_table %>%
   kable(
     caption = "Model Coefficients and 95 percent Confidence Interval",
@@ -197,25 +200,35 @@ linesep = "", digits = 1, booktabs=TRUE) %>%
   kable_styling(latex_options = "HOLD_position", font_size = 8)
 ```
 
-P-value is an important value used to determine whether a predictor variable has significant impact on the responce variable. It measures ...
-
-By examining the P-values of all the predictor variables of the model, we found that they are all less than 0.05. 
-
-Table \@ref(tab:table1) shows the coefficients of the predictor variables of Model \@ref(eq:1). The baseline of the model is year 0 and Alberta province, 
 
 \newpage
 
+Table \@ref(tab:table1) shows the coefficients of the predictor variables of Model \@ref(eq:1). Due to the fact that none of their corresponding p-values have a value more than 0.05, they are all kept in the final model. The baseline of the model is year 0 and Alberta province, and it also accounts for the interaction term between year and Alberta, which means that an intercept-only model presents the difference between lowest and highest decile of average after-tax income at year 0 in province Alberta. This is of course unrealistic because we only account for the data after 1976. Therefore, the "Year" variable has a strict minimum value of 1976 for this model. If the goal is to estimate the income inequality in the provinces other than Alberta, coefficient $\beta_2$ indicating which province it is and $\beta_3$ indicating the interaction between year and the specified province come into play, and their corresponding coefficient values can be found in Table \@ref(tab:table1) under "Coefficients".
+
+As Table \@ref(tab:table1) shows, in all the provinces of Canada with no exceptions, income inequality is continuously increasing and becoming more serious issues. Among all provinces, Alberta has the most increase in income inequality. As the "Year" variable increases by 1, the difference between lowest and highest decile of the average after-tax income in Alberta can increase by up to \$3777, while all the other provinces demonstrate some level of increase in income inequality, but none of them reach the level of increase in Alberta. The provinces following Alberta with the second and third fastest increase in the difference between lowest and highest decile of the average after-tax income is Newfoundland and Labrador and Ontario. As the "Year" variable increases by 1, their estimated income inequality increase respectively by \$2727.5 and \$2721.5. Quebec, on the other side, is the province with the lowest increase in the difference between lowest and highest decile of the average after-tax income in Canada. As the "Year" variable increases by 1, the estimated difference between lowest and highest average after-tax income decile in Quebec increases by \$1809.9. As a result of this, we can see that even though early in 1976, Ontario province had the highest estimated income inequality, with a difference between highest and lowest income decile of approximately \$171236.5, but at the end of 2020, Alberta is currently the province with the highest estimated difference between lowest and highest average after-tax income decile, with a estimated value of \$316071.9. If in real life, the situation keeps following the trend of our estimated model, by the end of 2050, the predicted income inequality in Alberta will reach a point where the difference between lowest and highest average after-tax income decile will be approximately \$429381.9, which is incredibly high.
+
+The confidence interval is a type of statistic that gives an upper bound and a lower bound of the value that we expect that if we rerun the test with different samples of the population, the value will fall into this range for at least a certain percent of times [@cite7]. In this report, I decided to use a two-tailed 95% confidence interval for all the coefficients of Model \@ref(eq:1). In the context of this model, I'm confident that if I re-sample the population and construct the same model for 100 times, for 95 times the value of coefficients will fall in the confidence interval. The 95% confidence interval of all coefficients in presented in Table \@ref(tab:table1).
+
+
 # Discussion
 
-## ... by Year
+## Evolution of Income Disparity by Year
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+In section \@ref(results), we have talked about the outcome of the model, which is that time is the main factor expanding the issue of income disparity in Canada. Between 1976 and 2020, the difference in income level between the poorest group and the richest group has increase from \$184400 to \$264600 for approximately \$80200, which is even more than what an average Canadian earns in 2020. This implies that even though people are aware of this for quite some time, income disparity is still becoming a larger issue, and is likely to grow more in future. Some people claimed that the uneven distribution of income is inevitable if we want the country's economy to keep expanding; it's just a side effect of economic growth. It seems true in the case of Canada, since in Figure \@ref(fig:figure3), we can see that the only times when the difference between highest and lowest income decile decreased, is around 1980s and 1990s when Canada was experiencing recession. However, constant gdp growth does not mean that the average people of Canada are doing better, because commodity prices grow as well along with the income and may be a bigger pressure for the poorest people whose income had not increased much [@cite2]. The richest countries in the world typically share similar issues with respect to income inequality. On the contrary, countries that have good geographical locations and a potential to be more developed but choose to sacrifice that advantage for the well-being of the general public, such as lots of European countries, usually have pretty low income inequality and poverty level by their tax, welfare system and government policies.
 
-## The role of province
+As for Canada, it's just a matter of seeking a balance between economic development and equality. The federal income-tax system we currently have is progressive, which already favors the average people more than the rich [@cite8]. However, one of the solution to reduce income inequality more in federal level is to further increase the income-tax for the richest people. This could be the most effective approach, but even though it's enhancing the whole society's welfare, it's also harming the interest of some individuals, which could lead to further ethical issues and a whole lot judgments and discussions around this approach. Therefore, this solution would be too difficult and ideal to carry out.
+
+
+## The role of Province
+
+As we examined the issue of income inequality in different provinces earlier, we found that Alberta has the highest rate of increase in income inequality, followed by Newfoundland and Labrador and Ontario, while Quebec has the lowest increase in income inequality. These statistics in a way implies the economic development and opportunities in these provinces. For instance, Alberta and Ontario are the few provinces with the most GPD per capita and Market income per capita in recent years. Alberta has a whole  profitable oil and energy industry due to its rich oil resources, and Ontario, being the province with the largest population in Canada, developed its economy based on lots of sectors including manufacturing, exports, service, high-tech industries and more. In the provinces with higher income inequality, the residents are likely to experience more competition to seek for better opportunities, and are likely to be under higher level of stress, which could lead to more social and health problems. It's unrealistic to suspend the provinces' economic developments just to promote income equality. One approach to reduce it is to manipulate provincial income tax to favor the groups with lower incomes. Another possible solution is to encourage different provinces to carry out different policies to provide benefits and welfare to the lower-income groups to even out. These approaches could be challenging to carry out and unrealistic at the moment, but if actions are not taken, income disparity will likely to grow into more challenging problems in future.
+
 
 ## Weaknesses and next steps
 
-Weaknesses and next steps should also be included.
+Strictly speaking, income level of individuals is counted as private information, and it's usually not allowed to publicly disclose it unless granted. Therefore, it would be hard to find individual's income information. The data used to justify income inequality in this paper is the difference between the lowest and highest decile of average after-tax income. This doesn't reflect the real gap between the richest and the poorest, because this dataset gathers the average of the top ten percent and the bottom ten percent. In reality, the issue of income inequality will only be worse that what's predicted by this paper. In the Canadian Income Survey, it indicates that less the people who live in remote areas which accounts for less than 2% of the population are not included in the target population of the survey. In the meanwhile, these people are usually the ones with lower income levels. As a result, a systematic error may occur with this dataset due to the survey's metholody and data collection process, which probably increase the lowest decile of average income and further weaken the issue of income inequality. 
+
+This paper analyzed how income diaparity in Canada is affected by time and different regions. However, income inequality is only an aspect of economic inequality. Other aspects of economic inequality includes uneven distribution of the wealth and assets of the Canadians, which also causes similar social challenges A possible future step of this paper is to focus on the wealth inequality and investigate whether it is a problem in Canada as well as its relationships with income inequality. In addition, in a few years from now, we could come back to this paper and see if the trend of income inequality is really what it predicted to be, or if the issue is lightened by potential government policies.
 
 
 \newpage
@@ -230,12 +243,15 @@ R package "modelsummary"[@citemodelsummary] helps to display the coefficients of
 
 $R^2$ measures how well the model explains its response variable's variation. If $R^2$ is low, it indicates that the model doesn't fit the data well. By Table \@ref(tab:table2), in Model 1, 84.5% of the variability is explained, and in Model 2, 87.4% of the variability is explained. Both models demonstrate a pretty high  $R^2$ value.
 
-AIC and BIC measure the prediction ability of the multiple linear regression model. AIC(Akaike’s Information Criteria) focuses on how well the model fits unknown data, while BIC(Bayesian Information Criteria) focuses on the true model and favours simpler models(5). Lower AIC and BIC both indicate that the model has better prediction power. By Table \@ref(tab:table2), Model 2 has slightly lower AIC and BIC than Model 1, implying that Model 2 has more prediction power.
+AIC and BIC measure the prediction ability of the multiple linear regression model. AIC(Akaike’s Information Criteria) focuses on how well the model fits unknown data, while BIC(Bayesian Information Criteria) focuses on the true model and favours simpler models [@cite5]. Lower AIC and BIC both indicate that the model has better prediction power. By Table \@ref(tab:table2), Model 2 has slightly lower AIC and BIC than Model 1, implying that Model 2 has more prediction power.
 
 ```{r table2, echo=FALSE, message=FALSE}
+# setup library
 #install.packages("modelsummary")
 library(modelsummary)
-modelsummary(list(model1, model2), title = "Comparing Model 1 and Model 2 Statistics")
+
+# compare the coefficients and test statistics of the two models
+modelsummary(list(model1, model2), title = "Comparing Model 1 and Model 2's Statistics")
 ```
 
 \newpage
@@ -251,10 +267,13 @@ error2 <- income_model_test$`Income range` - pred2
 RMSE1 <- sqrt(mean(error1^2))
 RMSE2 <- sqrt(mean(error2^2))
 
+
+# construct a table to compare RMSE between different models and different sets
 table_RMSE <- tibble(`Model 1` = c(17227, 17293.8),
                      `Model 2` = c(15753.8, 15052.8),
                      dataset = c("train","test"))
 
+# display the table
 table_RMSE %>%
   kable(
     caption = "Comparing RMSE between two models",
@@ -270,6 +289,7 @@ The RMSE measures how far the predicted values of the multiple linear regression
 # Model Assumption Check
 
 ```{r figure5, echo=FALSE, message=FALSE, fig.cap="Checking the assumptions of linear model", fig.width=6}
+# plot the model to check for its assumptions
 par(mfrow = c(2, 2))
 plot(model2)
 ```
@@ -277,7 +297,7 @@ plot(model2)
 Check for assumption:
 Assumptions to the multiple linear regression model are checked to ensure that the model is valid for this dataset. Figure \@ref(fig:figure5) shows the plots used to check for the assumption.
 
-The Residuals vs Fitted plot checks for the linear relationship assumption. Since the red line is almost horizontal and there isn't any pattern, the model satisfies the linearity assumption. The Normal QQ plot checks for the residual normality assumption. Since almost all the dots are on the dashed line, the residuals follow a normal distribution. The Scale-Location plot checks for the homoscedasticity assumption. The red line is horizontal and the dots are evenly scattered, indicating that the variance of the residuals is constant(4). 
+The Residuals vs Fitted plot checks for the linear relationship assumption. Since the red line is almost horizontal and there isn't any pattern, the model satisfies the linearity assumption. The Normal QQ plot checks for the residual normality assumption. Since almost all the dots are on the dashed line, the residuals follow a normal distribution. The Scale-Location plot checks for the homoscedasticity assumption. The red line is horizontal and the dots are evenly scattered, indicating that the variance of the residuals is constant [@cite4]. 
 
 \newpage
 
@@ -470,16 +490,3 @@ The Residuals vs Fitted plot checks for the linear relationship assumption. Sinc
 
 
 # References
-
-
-https://www.nytimes.com/2020/07/01/opinion/economic-inequality-moral-philosophy.html#:~:text=Enough%20economic%20inequality%20can%20transform,society%20ruled%20by%20the%20rich.&text=Large%20inequalities%20of%20inherited%20wealth,and%20undercuts%20equality%20of%20opportunity.
-
-(2)https://www.conferenceboard.ca/hcp/hot-topics/canInequality.aspx#:~:text=Income%20inequality%20in%20Canada%20has,income%20Canadians%20also%20lost%20share.
-
-https://www23.statcan.gc.ca/imdb/p2SV.pl?Function=getSurvey&SDDS=5200
-
-(4)http://www.sthda.com/english/articles/39-regression-model-diagnostics/161-linear-regression-assumptions-and-diagnostics-in-r-essentials/
-
-(5)https://stats.stackexchange.com/questions/577/is-there-any-reason-to-prefer-the-aic-or-bic-over-the-other
-
-

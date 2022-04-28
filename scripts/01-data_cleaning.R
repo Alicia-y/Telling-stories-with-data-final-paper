@@ -55,8 +55,8 @@ for(i in 1:nrow(raw_data)) {
 cleaned_data <- raw_data %>%
   drop_na(Year, `Geographical Location`, `Income decile`, Income)      
 
-# save the cleaned data to inputs folder
-write_csv(cleaned_data, "STA304/Telling-stories-with-data-final-paper/inputs/cleaned_data.csv")
+# save the cleaned data to inputs folder, adjust the path based on where you saved the file
+write_csv(cleaned_data, "Telling-stories-with-data-final-paper/inputs/cleaned_data.csv")
 
 
          

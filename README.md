@@ -11,4 +11,5 @@ There are three folders in this repository: inputs, scripts, and outputs.
 
 ## How to generate the paper
 - Download a ZIP file of this repository
-- Run 01-cata_cleaning.R to 
+- Run 01-cata_cleaning.R to clean the original dataset
+- Run paper.rmd to generate the pdf version of the paper
