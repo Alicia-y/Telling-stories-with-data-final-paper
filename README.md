@@ -13,4 +13,4 @@ There are three folders in this repository: inputs, scripts, and outputs.
 - Download a ZIP file of this repository and open the .Rproj file in RStudio
 - Run 01-cata_cleaning.R to clean the original dataset
 - Run paper.rmd to generate the pdf version of the paper
-- Please remeber to adjust the path when you read in and write the data based on where you saved this project
+- Please remember to change the path when you read in and write the data based on where you saved this project
