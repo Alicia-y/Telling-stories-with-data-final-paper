@@ -1,6 +1,6 @@
 ---
 title: "Evolution of Income Inequality in Canada"
-subtitle: "It's becoming a more serious issue as over time, especially in the richest provinces."
+subtitle: "It's becoming a more serious issue over time, especially in the richest provinces."
 author: 
   - Alicia Yang
 thanks: "Code and data are available at: https://github.com/Alicia-y/Telling-stories-with-data-final-paper"
